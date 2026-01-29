@@ -121,6 +121,9 @@ All architecture decisions must uphold these principles:
 
 ## References
 
-- [ADR-001](./adr-001-dapr-agents-framework.md): Framework choice
-- [ADR-002](./adr-002-observability-strategy.md): Observability implementation
-- [ADR-003](./adr-003-evaluation-framework.md): Evaluation approach
+- [ADR-001](./adr-001-coding-assistant-agnosticism.md): Coding assistant agnosticism
+- [ADR-002](./adr-002-ci-cd-agnosticism.md): CI/CD platform agnosticism
+- [ADR-003](./adr-003-python-tooling.md): Python tooling
+- [ADR-004](./adr-004-dapr-agents-framework.md): Framework choice
+- [ADR-005](./adr-005-observability-strategy.md): Observability implementation
+- [ADR-006](./adr-006-evaluation-framework.md): Evaluation approach
