@@ -16,6 +16,7 @@
 | [001](adr-001-coding-assistant-agnosticism.md) | Coding Assistant Agnosticism | Single canonical AI config source; tool-specific files are generated |
 | [002](adr-002-ci-cd-agnosticism.md) | CI/CD Platform Agnosticism | Logic in scripts not workflows; Makefile as standard interface; local/CI parity |
 | [003](adr-003-python-tooling.md) | Python Tooling | uv + pyproject.toml + nox + Makefile + ruff + pytest |
+| [004](adr-004-adr-governance-commands.md) | ADR Governance Commands | `/adr-check` and `/adr-suggest` slash commands for architectural drift prevention |
 
 ## Quick Reference: All Rules
 
@@ -47,6 +48,11 @@
 - Makefile as standard interface
 - ruff for linting/formatting
 - pytest for testing
+
+### From ADR-004 (ADR Governance Commands)
+- `/adr-check`: Run before committing to evaluate changes against accepted ADRs
+- `/adr-suggest`: Run periodically to detect patterns that may need new ADRs
+- Command definitions live in `.ai/commands/`
 
 ## ADR Format
 
