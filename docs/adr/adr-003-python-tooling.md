@@ -3,6 +3,17 @@
 **Status:** Accepted
 **Date:** 2025-01-29
 
+## Rules
+
+<!-- AI: This section contains actionable constraints. Read this first. -->
+
+1. **uv** for package/environment management (not pip, poetry)
+2. **pyproject.toml** as single config source (no setup.py, requirements.txt)
+3. **nox** for task automation (sessions are Python functions)
+4. **Makefile** as standard interface: `make test` → `nox -s test`
+5. **ruff** for linting and formatting (not flake8, black, isort)
+6. **pytest** for testing
+
 ## Context
 
 This is a Python project requiring standard development workflows: dependency management, virtual environments, testing, linting, and formatting. Per [ADR-002](./adr-002-ci-cd-agnosticism.md), we need a layered approach where CI workflows call a standard interface, which delegates to task runners.

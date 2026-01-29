@@ -3,6 +3,15 @@
 **Status:** Accepted
 **Date:** 2025-01-29
 
+## Rules
+
+<!-- AI: This section contains actionable constraints. Read this first. -->
+
+1. **Canonical source**: AI assistant config lives in a single source of truth, tool-specific files are generated
+2. **Full utilization**: Use each tool's full capabilities; transformation layer handles differences
+3. **Documentation primary**: Architecture lives in ADRs, AI config references them (no duplication)
+4. **Generated files**: `.cursor/rules`, `CLAUDE.md`, etc. are outputs, not sources
+
 ## Context
 
 This project uses AI coding assistants for development. The landscape is evolving rapidly with Claude Code, Cursor, GitHub Copilot, Codeium, and others competing with different capabilities and pricing.

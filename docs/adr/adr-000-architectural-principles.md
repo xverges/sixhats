@@ -3,6 +3,20 @@
 **Status:** Accepted
 **Date:** 2025-01-28
 
+## Rules
+
+<!-- AI: This section contains actionable constraints. Read this first. -->
+
+1. **Protocol-agnostic core**: Orchestration works with abstract roles/phases/contributions, not Six Hats specifics
+2. **Cognitive separation**: Agents think, orchestrators coordinate—never mix them
+3. **Observable by default**: Every LLM call, contribution, and state mutation must be traced
+4. **Evaluable by design**: All reasoning artifacts must be structured for automated evaluation
+5. **Append-only memory**: Never overwrite thinking—only add to it
+6. **Human sovereignty**: Humans can pause, override, or inject at any point
+7. **Replaceable intelligence**: LLM providers abstracted behind interfaces; prompts are config
+8. **Fail gracefully**: Partial results over crashes; failures logged with context
+9. **Learning-first**: We may build things that exist as libraries for understanding—document what we learned
+
 ## Context
 
 We are building a multi-agent system to evaluate scenarios using structured thinking protocols. **Six Thinking Hats** is our first implementation, but the architecture should not preclude other cognitive frameworks (SCAMPER, design thinking, lateral thinking, etc.).

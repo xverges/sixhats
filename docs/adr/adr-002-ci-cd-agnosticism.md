@@ -3,6 +3,15 @@
 **Status:** Accepted
 **Date:** 2025-01-29
 
+## Rules
+
+<!-- AI: This section contains actionable constraints. Read this first. -->
+
+1. **Logic in scripts**: CI workflows are thin orchestration; actual logic lives in Makefile → task runner
+2. **Local parity**: All commands must run identically locally and in CI
+3. **No platform lock-in**: Avoid proprietary CI features without abstraction
+4. **Standard interface**: Use `make test`, `make lint`, `make build` as entry points
+
 ## Context
 
 This project requires continuous integration and deployment automation. The CI/CD landscape includes GitHub Actions, GitLab CI, CircleCI, Jenkins, and others with varying features and lock-in levels.
