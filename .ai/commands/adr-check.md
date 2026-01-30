@@ -4,11 +4,9 @@ Evaluate code changes against approved Architecture Decision Records.
 
 ## Instructions
 
-1. Read all ADR files from `docs/adr/adr-*.md`
-2. Filter to ADRs with `Status: Accepted`
-3. For each accepted ADR, extract the **Rules** section
-4. Get the git diff for the requested scope (default: staged changes)
-5. Analyze the diff against ADR rules and report findings
+1. Run `uv run scripts/adr-list.py` to get accepted ADRs and their rules
+2. Get the git diff for the requested scope (default: staged changes)
+3. Analyze the diff against ADR rules and report findings
 
 ## Scope Options
 

@@ -4,7 +4,7 @@ Identify patterns in the codebase that may warrant new Architecture Decision Rec
 
 ## Instructions
 
-1. Read existing ADRs from `docs/adr/adr-*.md` to understand what's documented
+1. Run `uv run scripts/adr-list.py` to get accepted ADRs and their rules
 2. Analyze the requested scope for recurring patterns
 3. Identify decisions that are implicit in code but not documented
 4. Suggest new ADRs where patterns appear 2+ times
