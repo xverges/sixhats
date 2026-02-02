@@ -4,11 +4,17 @@ Workspace schema for Six Thinking Hats multi-agent system.
 See ADR-010 for design rationale.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
+
+
+def _utc_now() -> datetime:
+    """Return current UTC time (timezone-aware)."""
+    return datetime.now(timezone.utc)
 
 
 class RunStatus(str, Enum):
@@ -49,8 +55,8 @@ class RunMetadata(BaseModel):
     run_id: str = Field(default_factory=lambda: str(uuid4()))
     status: RunStatus = RunStatus.INITIALIZED
     mode: RunMode = RunMode.AUTO
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
+    updated_at: datetime = Field(default_factory=_utc_now)
     protocol: str = "six_thinking_hats:v1"
     initiator: str = "system"
     tags: list[str] = Field(default_factory=list)
@@ -99,9 +105,9 @@ class Contribution(BaseModel):
     agent: AgentInfo
     hat: HatType
     content: str
-    structured: dict | None = None  # Hat-specific structured data
+    structured: dict[str, Any] | None = None  # Hat-specific structured data
     confidence: float | None = None  # None = not assessed
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
     tags: list[str] = Field(default_factory=list)
     tokens_in: int = 0
     tokens_out: int = 0
@@ -118,10 +124,10 @@ class Synthesis(BaseModel):
     hat: HatType
     summary: str
     key_points: list[str] = Field(default_factory=list)
-    clusters: list[dict] = Field(default_factory=list)  # Grouped themes
+    clusters: list[dict[str, Any]] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType] - Grouped themes
     contradictions: list[str] = Field(default_factory=list)
     confidence: float | None = None  # None = not assessed
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
     derived_from: list[str] = Field(default_factory=list)  # contribution_ids
 
 
@@ -131,7 +137,7 @@ class Synthesis(BaseModel):
 class HatState(BaseModel):
     """State for a single thinking hat."""
 
-    raw: list[Contribution] = Field(default_factory=list)
+    raw: list[Contribution] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     synthesis: Synthesis | None = None
 
 
@@ -147,7 +153,7 @@ class Decision(BaseModel):
     based_on: list[str] = Field(default_factory=list)  # synthesis_ids or contribution_ids
     made_by: str  # "human" or "auto-blue"
     confidence: float | None = None  # None = not assessed
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
 
 
 class ActionItem(BaseModel):
@@ -161,7 +167,7 @@ class ActionItem(BaseModel):
     origin_hat: HatType
     based_on: list[str] = Field(default_factory=list)  # contribution_ids or synthesis_ids
     status: str = "open"
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
 
 
 class OpenQuestion(BaseModel):
@@ -171,16 +177,16 @@ class OpenQuestion(BaseModel):
     question: str
     origin_hat: HatType
     priority: str = "medium"
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=_utc_now)
 
 
 class Artifacts(BaseModel):
     """Cross-hat outputs and decisions."""
 
     global_summary: str | None = None
-    decisions: list[Decision] = Field(default_factory=list)
-    action_items: list[ActionItem] = Field(default_factory=list)
-    open_questions: list[OpenQuestion] = Field(default_factory=list)
+    decisions: list[Decision] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    action_items: list[ActionItem] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+    open_questions: list[OpenQuestion] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
 
 
 # --- Audit ---
@@ -193,8 +199,8 @@ class AuditEvent(BaseModel):
     event_type: str  # HAT_STARTED, HAT_COMPLETED, HUMAN_INPUT, ERROR, etc.
     hat: HatType | None = None
     actor: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-    data: dict = Field(default_factory=dict)
+    timestamp: datetime = Field(default_factory=_utc_now)
+    data: dict[str, Any] = Field(default_factory=dict)
 
 
 class AuditMetrics(BaseModel):
@@ -211,7 +217,7 @@ class AuditMetrics(BaseModel):
 class Audit(BaseModel):
     """Audit trail and metrics for a run."""
 
-    events: list[AuditEvent] = Field(default_factory=list)
+    events: list[AuditEvent] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
     metrics: AuditMetrics = Field(default_factory=AuditMetrics)
 
 

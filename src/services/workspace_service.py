@@ -5,7 +5,8 @@ Handles mutations, audit logging, and metrics tracking for workspaces.
 Persistence integration will be added here.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
+from typing import Any
 
 from src.schemas.workspace import (
     AuditEvent,
@@ -30,19 +31,19 @@ class WorkspaceService:
     def add_contribution(self, contribution: Contribution) -> None:
         """Add a contribution to the appropriate hat."""
         self._workspace.hats[contribution.hat].raw.append(contribution)
-        self._workspace.run.updated_at = datetime.utcnow()
+        self._workspace.run.updated_at = datetime.now(timezone.utc)
 
     def set_synthesis(self, hat: HatType, synthesis: Synthesis) -> None:
         """Set the synthesis for a hat."""
         self._workspace.hats[hat].synthesis = synthesis
-        self._workspace.run.updated_at = datetime.utcnow()
+        self._workspace.run.updated_at = datetime.now(timezone.utc)
 
     def add_event(
         self,
         event_type: str,
         actor: str,
         hat: HatType | None = None,
-        **data,
+        **data: Any,
     ) -> None:
         """Add an audit event."""
         self._workspace.audit.events.append(

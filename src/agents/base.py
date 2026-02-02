@@ -12,9 +12,10 @@ See ADR-005 (dapr-agents framework) and ADR-010 (workspace schema).
 import inspect
 import time
 from abc import ABC, abstractmethod
+from typing import cast
 
 from dapr_agents.llm.chat import ChatClientBase
-from dapr_agents.types.message import SystemMessage, UserMessage
+from dapr_agents.types.message import LLMChatResponse, SystemMessage, UserMessage
 from pydantic import BaseModel
 
 from src.schemas.workspace import (
@@ -93,18 +94,22 @@ class HatAgentBase(ABC):
 
         result = self.llm_client.generate(
             messages=[
-                SystemMessage(system_prompt),
-                UserMessage(user_prompt),
+                SystemMessage(content=system_prompt),
+                UserMessage(content=user_prompt),
             ],
         )
         # Handle both sync and async LLM clients
-        response = await result if inspect.iscoroutine(result) else result
+        # pyright doesn't narrow types based on inspect.iscoroutine()
+        if inspect.iscoroutine(result):
+            response = cast(LLMChatResponse, await result)  # pyright: ignore[reportGeneralTypeIssues]
+        else:
+            response = cast(LLMChatResponse, result)  # pyright: ignore[reportUnnecessaryCast]
 
         elapsed_ms = int((time.perf_counter() - start_time) * 1000)
 
         # Extract content and token usage from response
         message = response.get_message()
-        content = message.content
+        content: str = (message.content if message and message.content else "")
 
         # Token usage may be available on the response object
         # TODO(ADR-007): Calculate estimated cost based on model pricing
