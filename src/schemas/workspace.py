@@ -4,7 +4,7 @@ Workspace schema for Six Thinking Hats multi-agent system.
 See ADR-010 for design rationale.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 from uuid import uuid4
@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 def _utc_now() -> datetime:
     """Return current UTC time (timezone-aware)."""
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class RunStatus(str, Enum):
