@@ -19,7 +19,7 @@ dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
     "ruff>=0.4",
-    "mypy>=1.10",
+    "pyright>=1.1",
     "nox>=2024.4.15",
 ]
 
@@ -44,9 +44,9 @@ select = [
     "UP",  # pyupgrade
 ]
 
-[tool.mypy]
-python_version = "3.11"
-strict = true
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
