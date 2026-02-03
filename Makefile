@@ -60,6 +60,10 @@ configure-assistant-all:  ## Generate all AI assistant configs
 	@chmod +x scripts/configure-assistant.sh
 	@./scripts/configure-assistant.sh all
 
+configure-assistant-antigravity:  ## Generate Antigravity workflows
+	@chmod +x scripts/configure-assistant.sh
+	@./scripts/configure-assistant.sh antigravity
+
 configure-assistant-claude:  ## Generate Claude Code slash commands
 	@chmod +x scripts/configure-assistant.sh
 	@./scripts/configure-assistant.sh claude

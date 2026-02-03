@@ -3,6 +3,7 @@
 # See ADR-001 (Coding Assistant Agnosticism).
 #
 # Usage: ./scripts/configure-assistant.sh [tool]
+#   tool: claude (default), cursor, antigravity, all
 
 set -euo pipefail
 
@@ -60,6 +61,66 @@ generate_cursor() {
     echo "Add transformation logic here when needed."
 }
 
+generate_antigravity() {
+    echo "Generating Antigravity configuration..."
+
+    # 1. Create .agent/README.md symlink to canonical AGENTS.md
+    local agents_md="${REPO_ROOT}/.ai/AGENTS.md"
+    local agent_readme="${REPO_ROOT}/.agent/README.md"
+
+    if [[ -f "$agents_md" ]]; then
+        mkdir -p "${REPO_ROOT}/.agent"
+        rm -f "$agent_readme"
+        ln -sf "../.ai/AGENTS.md" "$agent_readme"
+        echo "  .agent/README.md -> .ai/AGENTS.md"
+    else
+        echo "  Warning: .ai/AGENTS.md not found, skipping .agent/README.md"
+    fi
+
+    # 2. Transform commands to workflows (Antigravity uses YAML frontmatter)
+    local target_dir="${REPO_ROOT}/.agent/workflows"
+    mkdir -p "$target_dir"
+
+    # Remove existing workflow files
+    rm -f "$target_dir"/*.md 2>/dev/null || true
+
+    # Transform each command to workflow format
+    for cmd in "$CANONICAL_DIR"/*.md; do
+        if [[ -f "$cmd" ]]; then
+            local basename
+            basename=$(basename "$cmd")
+            local target="${target_dir}/${basename}"
+            
+            # Extract title from first heading (assumes "# Title" format)
+            local title
+            title=$(grep -m 1 '^# ' "$cmd" | sed 's/^# //' || echo "Command")
+            
+            # Create workflow with YAML frontmatter
+            {
+                echo "---"
+                echo "description: ${title}"
+                echo "---"
+                tail -n +2 "$cmd"  # Skip the first line (title) from original
+            } > "$target"
+            
+            echo "  /${basename%.md} -> .agent/workflows/${basename}"
+        fi
+    done
+
+    echo ""
+    echo "Done. Configuration generated:"
+    echo "  - .agent/README.md (project context)"
+    if [[ -d "$target_dir" ]]; then
+        for workflow in "$target_dir"/*.md; do
+            if [[ -f "$workflow" ]]; then
+                local name
+                name=$(basename "$workflow" .md)
+                echo "  - /${name} (workflow)"
+            fi
+        done
+    fi
+}
+
 case "${1:-claude}" in
     claude)
         generate_claude
@@ -67,11 +128,16 @@ case "${1:-claude}" in
     cursor)
         generate_cursor
         ;;
+    antigravity)
+        generate_antigravity
+        ;;
     all)
         generate_claude
         generate_cursor
+        generate_antigravity
         ;;
     *)
+        echo "Usage: $0 [claude|cursor|antigravity|all]"
         exit 1
         ;;
 esac
