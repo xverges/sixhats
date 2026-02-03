@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Generate tool-specific AI assistant configuration from canonical source.
-# See ADR-001 (Coding Assistant Agnosticism) and ADR-004 (ADR Governance Commands).
+# See ADR-001 (Coding Assistant Agnosticism).
 #
 # Usage: ./scripts/configure-assistant.sh [tool]
-#   tool: claude (default), cursor, all
 
 set -euo pipefail
 
@@ -11,9 +10,22 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CANONICAL_DIR="${REPO_ROOT}/.ai/commands"
 
 generate_claude() {
-    local target_dir="${REPO_ROOT}/.claude/commands"
+    echo "Generating Claude Code configuration..."
 
-    echo "Generating Claude Code slash commands..."
+    # 1. Create CLAUDE.md symlink to canonical AGENTS.md
+    local agents_md="${REPO_ROOT}/.ai/AGENTS.md"
+    local claude_md="${REPO_ROOT}/CLAUDE.md"
+
+    if [[ -f "$agents_md" ]]; then
+        rm -f "$claude_md"
+        ln -sf ".ai/AGENTS.md" "$claude_md"
+        echo "  CLAUDE.md -> .ai/AGENTS.md"
+    else
+        echo "  Warning: .ai/AGENTS.md not found, skipping CLAUDE.md"
+    fi
+
+    # 2. Create slash command symlinks
+    local target_dir="${REPO_ROOT}/.claude/commands"
     mkdir -p "$target_dir"
 
     # Remove existing symlinks
@@ -29,14 +41,18 @@ generate_claude() {
         fi
     done
 
-    echo "Done. Slash commands available:"
-    for cmd in "$target_dir"/*.md; do
-        if [[ -f "$cmd" ]]; then
-            local name
-            name=$(basename "$cmd" .md)
-            echo "  /$name"
-        fi
-    done
+    echo ""
+    echo "Done. Configuration generated:"
+    echo "  - CLAUDE.md (project context)"
+    if [[ -d "$target_dir" ]]; then
+        for cmd in "$target_dir"/*.md; do
+            if [[ -f "$cmd" ]]; then
+                local name
+                name=$(basename "$cmd" .md)
+                echo "  - /$name (slash command)"
+            fi
+        done
+    fi
 }
 
 generate_cursor() {
@@ -56,7 +72,6 @@ case "${1:-claude}" in
         generate_cursor
         ;;
     *)
-        echo "Usage: $0 [claude|cursor|all]"
         exit 1
         ;;
 esac
