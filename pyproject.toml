@@ -21,6 +21,7 @@ dev = [
     "ruff>=0.4",
     "pyright>=1.1",
     "nox>=2024.4.15",
+    "nox-uv>=0.2",
 ]
 
 [build-system]

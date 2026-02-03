@@ -2,37 +2,36 @@
 
 See ADR-003 (Python Tooling) for the layered architecture:
 Makefile → nox → uv
+
+Uses nox-uv to install dependencies from uv's lockfile and dependency groups.
 """
 
 import nox
+from nox_uv import session
 
 nox.options.default_venv_backend = "uv"
 nox.options.reuse_existing_virtualenvs = True
 
 
-@nox.session
+@session(uv_only_groups=["dev"])
 def format(session: nox.Session) -> None:
     """Format code with ruff."""
-    session.install("ruff")
     session.run("ruff", "format", ".")
 
 
-@nox.session
+@session(uv_only_groups=["dev"])
 def lint(session: nox.Session) -> None:
     """Run the linter."""
-    session.install("ruff")
     session.run("ruff", "check", ".")
 
 
-@nox.session
+@session(uv_groups=["dev"])
 def test(session: nox.Session) -> None:
     """Run the test suite."""
-    session.install("-e", ".[dev]")
     session.run("pytest", *session.posargs)
 
 
-@nox.session
+@session(uv_groups=["dev"])
 def typecheck(session: nox.Session) -> None:
     """Run pyright type checker."""
-    session.install("-e", ".[dev]")
     session.run("pyright", "src/", *session.posargs)
